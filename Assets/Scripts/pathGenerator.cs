@@ -11,7 +11,12 @@ public class pathGenerator : MonoBehaviour
     [Range(0f, 1f)]
     public float xScale;
     [Range(0f, 1f)]
-    public float yScale;
+    public float zScale;
+
+    [Range(1, 10)]
+    public int xLength;
+    [Range(1, 10)]
+    public int zWidth;
 
     Mesh mesh;
 
@@ -34,18 +39,50 @@ public class pathGenerator : MonoBehaviour
 
     void CreatShape()
     {
-        vertices = new Vector3[]
+        vertices = new Vector3[(xLength + 1) * (zWidth + 1)];
+        for (int i = 0, z = 0; z <= zWidth; z++)
         {
-            new Vector3(0,0,0),
-            new Vector3(0,0,yScale),
-            new Vector3(xScale,0,0),
-            new Vector3(xScale,0,yScale)
-        };
-        triangles = new int[]
+            for (int x = 0; x <= xLength; x++)
+            {
+                vertices[i] = new Vector3(x * xScale, 0, z * zScale);
+                i++;
+            }
+        }
+
+        triangles = new int[xLength * zWidth * 6];
+        int tris = 0;
+        int vert = 0;
+
+
+        for (int z = 0; z< zWidth; z++)
         {
-            0,1,2,
-            1,3,2
-        };
+            for (int x = 0; x < xLength; x++)
+            {
+                triangles[tris + 0] = vert + 0;
+                triangles[tris + 1] = vert + xLength + 1;
+                triangles[tris + 2] = vert + 1;
+                triangles[tris + 3] = vert + 1;
+                triangles[tris + 4] = vert + xLength + 1;
+                triangles[tris + 5] = vert + xLength + 2;
+
+                vert++;
+                tris += 6;
+            }
+            vert++;
+        }
+
+        //vertices = new Vector3[]
+        //{
+        //    new Vector3(0,0,0),
+        //    new Vector3(0,0,yScale),
+        //    new Vector3(xScale,0,0),
+        //    new Vector3(xScale,0,yScale)
+        //};
+        //triangles = new int[]
+        //{
+        //    0,1,2,
+        //    1,3,2
+        //};
     }
 
     void UpdateMesh()
@@ -56,5 +93,15 @@ public class pathGenerator : MonoBehaviour
         mesh.triangles = triangles;
 
         mesh.RecalculateNormals();
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (vertices == null)
+            return;
+        for (int i = 0; i < vertices.Length; i++)
+        {
+            Gizmos.DrawSphere(vertices[i], 0.1f);
+        }
     }
 }

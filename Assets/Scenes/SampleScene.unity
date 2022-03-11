@@ -248,7 +248,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   xScale: 1
-  yScale: 0.75
+  zScale: 1
+  xLength: 10
+  zWidth: 2
 --- !u!4 &954528735
 Transform:
   m_ObjectHideFlags: 0
